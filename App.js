@@ -1,6 +1,5 @@
-import { StatusBar } from 'expo-status-bar';
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import React from 'react'
+import { StyleSheet, Text, View } from 'react-native'
 import AppView from './components/view'
 
 export default function App() {
@@ -8,7 +7,7 @@ export default function App() {
     <View style={styles.container}>
       <AppView></AppView>
     </View>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
@@ -16,4 +15,4 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
   },
-});
+})

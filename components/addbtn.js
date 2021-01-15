@@ -4,8 +4,8 @@ import { StyleSheet, Text, TouchableOpacity } from 'react-native'
 
 export default class AddBtn extends React.Component {
     constructor(props) {
-        super(props);
-        if (!this.props.addfn) this.props.addfn = _ => {}
+        super(props)
+        if (!this.props.addfn) this.props.addfn = _ => { }
     }
 
     render() {
@@ -28,12 +28,12 @@ export default class AddBtn extends React.Component {
                 color: "#fff",
             },
 
-        });
+        })
 
         return (
             <TouchableOpacity style={styles.addbtn} onPress={this.props.addfn}>
-            <Text style={styles.addbtntxt}>+</Text>
-        </TouchableOpacity>
+                <Text style={styles.addbtntxt}>+</Text>
+            </TouchableOpacity>
         )
     }
 }

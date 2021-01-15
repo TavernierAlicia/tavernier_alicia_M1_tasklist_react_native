@@ -1,11 +1,11 @@
 import React from 'react'
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler'
-import days from '../data'
 
 export default class Alldays extends React.Component {
     constructor(props) {
-        super(props);
+        super(props)
+        this.days = props.days
     }
 
     render() {
@@ -25,22 +25,33 @@ export default class Alldays extends React.Component {
                 margin: 5,
                 fontWeight: "bold",
                 fontSize: 20,
+            },
+            textBlack: {
+                color: "black"
+            },
+            textRed: {
+                color: "red"
             }
-        });
+        })
 
-        const Day = (date, id) => (
-            <TouchableOpacity onPress={_ => this.props.switchPage("Taskslist", id)} key={id}>
+        const Day = (d, color) => (
+            <TouchableOpacity onPress={_ => this.props.switchPage("Taskslist", d.id)} key={d.id}>
                 <View style={styles.element}>
-                    <Text style={styles.text}>{date}</Text>
+                    <Text style={[styles.text, color]}>{d.date} ({d.tasks.filter(t => t.status).length}/{d.tasks.length})</Text>
                 </View>
             </TouchableOpacity>
         )
 
-        const Days = [];
+        const Days = []
 
-        days.sort((a, b) => a.date.localeCompare(b.date)).map(d => {
-            if (d.date != this.props.today) {
-                Days.push(Day(d.date, d.id))
+        this.days.data.sort((a, b) => a.date.localeCompare(b.date)).map(d => {
+            var oldTasks = false
+            if (d.date.localeCompare(this.days.today) <= 0) oldTasks = true
+            if (d.date != this.days.today && d.tasks.length && (!oldTasks || d.tasks.filter(t => !t.status).length)) {
+                Days.push(Day(
+                    d,
+                    oldTasks ? styles.textRed : styles.textBlack
+                ))
             }
         })
 

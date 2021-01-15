@@ -1,22 +1,82 @@
 import React from 'react'
-import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native'
-import CheckBox from '@react-native-community/checkbox';
+import { StyleSheet, Text, View, TouchableOpacity, Image, Alert } from 'react-native'
+import CheckBox from '@react-native-community/checkbox'
 import { ScrollView } from 'react-native-gesture-handler'
-import days from '../data'
-import uuid from 'uuid-random';
+import DialogInput from 'react-native-dialog-input'
 import AddBtn from '../addbtn'
 
 
 export default class Taskslist extends React.Component {
     constructor(props) {
         super(props)
+        this.isDialogVisible = false
         this.checkTask = this.checkTask.bind(this)
+        this.removeDay = this.removeDay.bind(this)
+        this.toggleTaskDialog = this.toggleTaskDialog.bind(this)
+        this.addNewTask = this.addNewTask.bind(this)
+        this.removeTask = this.removeTask.bind(this)
+        this.days = props.days
     }
 
     checkTask(id) {
-        days.find(day => day.id == this.props.tl).tasks.find(task => task.id == id).status = !days.find(day => day.id == this.props.tl).tasks.find(task => task.id == id).status
+        this.days.checkTask(this.props.tl, id)
         this.forceUpdate()
     }
+
+    removeDay() {
+        Alert.alert(
+            "Warning",
+            "Are you sure to delete this day including all his tasks?",
+            [
+                {
+                    text: "Cancel",
+                    onPress: () => { },
+                    style: "cancel"
+                },
+                {
+                    text: "Delete", onPress: () => {
+                        this.days.removeDay(this.props.tl)
+                        this.props.switchPage("Homepage")
+                    }
+                }
+            ],
+            { cancelable: false }
+        )
+    }
+
+    toggleTaskDialog(status) {
+        this.isDialogVisible = status
+        this.forceUpdate()
+    }
+
+    addNewTask(text) {
+        this.days.addTask(this.props.tl, text)
+        this.toggleTaskDialog(false)
+    }
+
+    removeTask(id) {
+        Alert.alert(
+            "Warning",
+            "Are you sure to delete this task?",
+            [
+                {
+                    text: "Cancel",
+                    onPress: () => { },
+                    style: "cancel"
+                },
+                {
+                    text: "Delete", onPress: () => {
+                        this.days.removeTask(this.props.tl, id)
+                        this.forceUpdate()
+                    }
+                }
+            ],
+            { cancelable: false }
+        )
+
+    }
+
+
 
     render() {
 
@@ -64,7 +124,7 @@ export default class Taskslist extends React.Component {
                 flex: 1,
             },
 
-        });
+        })
 
         const Task = (name, key, status) => (
             <View style={styles.taskBox} key={key}>
@@ -74,17 +134,16 @@ export default class Taskslist extends React.Component {
                         <Text >{name}</Text>
                     </TouchableOpacity>
                 </View>
-                <TouchableOpacity>
+                <TouchableOpacity onPress={_ => this.removeTask(key)}>
                     <Image style={styles.trash} source={require('../../assets/baseline_delete_black.png')} />
                 </TouchableOpacity>
             </View>
         )
 
-        const Tasks = [];
+        const Tasks = []
         var i = 0
         var f = 0
-        var t = days.find(day => day.id == this.props.tl) || { id: uuid(), date: this.props.today, tasks: [] }
-        console.log(this.props.tl)
+        var t = this.days.getDataByDay(this.props.tl)
         t.tasks.map(task => {
             i++
             var sty = ""
@@ -98,11 +157,6 @@ export default class Taskslist extends React.Component {
             Tasks.push(Task(task.name, task.id, task.status))
         })
 
-        // TODO:
-        // Add day + task
-        // Remove day + task
-        // Save array in phone memory
-        // Remove old days
 
         return (
 
@@ -112,7 +166,7 @@ export default class Taskslist extends React.Component {
                         <Image style={styles.back} source={require('../../assets/baseline_arrow.png')} />
                     </TouchableOpacity>
                     <Text style={styles.title}>Tasks for {t.date}</Text>
-                    <TouchableOpacity>
+                    <TouchableOpacity onPress={_ => this.removeDay()}>
                         <Image style={styles.back} source={require('../../assets/outline_delete.png')} />
                     </TouchableOpacity>
                 </View>
@@ -120,7 +174,14 @@ export default class Taskslist extends React.Component {
                 <ScrollView>
                     {Tasks}
                 </ScrollView>
-                <AddBtn></AddBtn>
+                <DialogInput isDialogVisible={this.isDialogVisible}
+                    title={"Add task"}
+                    message={"Please type your task"}
+                    hintInput={"Ex: complain about neighbours"}
+                    submitInput={inputText => this.addNewTask(inputText)}
+                    closeDialog={_ => this.toggleTaskDialog(false)}>
+                </DialogInput>
+                <AddBtn addfn={_ => this.toggleTaskDialog(true)}></AddBtn>
             </View>
 
         )
