@@ -3,6 +3,7 @@ import { StyleSheet, Text, TouchableOpacity } from 'react-native'
 import { Card } from 'react-native-elements'
 import days from '../data'
 
+
 export default class Today extends React.Component {
     constructor(props) {
         super(props);
@@ -60,13 +61,12 @@ export default class Today extends React.Component {
             }
         })
 
-
         return (
             <TouchableOpacity onPress={_ => this.props.switchPage("Taskslist", id)}>
                 <Card>
                     <Card.Title>Today {this.props.today}</Card.Title>
                     <Card.Divider />
-                    <Text style={styles.taskslist}>Tasks ({i}) </Text>
+                    <Text style={styles.taskslist}> {i ? "Tasks ("+i+")" : "No tasks for today."}</Text>
                     {Tasks}
                 </Card>
             </TouchableOpacity>

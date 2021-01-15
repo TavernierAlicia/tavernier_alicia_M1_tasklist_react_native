@@ -3,6 +3,9 @@ import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native'
 import CheckBox from '@react-native-community/checkbox';
 import { ScrollView } from 'react-native-gesture-handler'
 import days from '../data'
+import uuid from 'uuid-random';
+import AddBtn from '../addbtn'
+
 
 export default class Taskslist extends React.Component {
     constructor(props) {
@@ -11,7 +14,7 @@ export default class Taskslist extends React.Component {
     }
 
     checkTask(id) {
-        days.find(day => day.id == this.props.tl).tasks.find(task => task.id==id).status = !days.find(day => day.id == this.props.tl).tasks.find(task => task.id==id).status
+        days.find(day => day.id == this.props.tl).tasks.find(task => task.id == id).status = !days.find(day => day.id == this.props.tl).tasks.find(task => task.id == id).status
         this.forceUpdate()
     }
 
@@ -27,36 +30,60 @@ export default class Taskslist extends React.Component {
                 flexDirection: "row",
                 justifyContent: "space-around",
                 paddingTop: 10,
-              },
-              title: {
+            },
+            title: {
                 fontWeight: "bold",
                 fontSize: 20,
                 color: "white",
-              },
-              back: {
+            },
+            back: {
                 height: 30,
                 width: 30,
-              },
-              checkbox: {
+            },
+            taskBox: {
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+                margin: 10,
+                borderTopColor: "rgba(228, 230, 232, .7)",
+                borderTopWidth: 1.5,
+                paddingTop: 10,
+                justifyContent: "space-between",
+            },
+            trash: {
+                height: 25,
+                width: 25,
+                opacity: 0.5
+            },
+            task: {
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+            },
+            view: {
+                flex: 1,
+            },
 
-              },
-              taskName: {
-
-              },
         });
 
-
         const Task = (name, key, status) => (
-            <TouchableOpacity onPress={_ => this.checkTask(key)} key={key}>
-                  <CheckBox value={status} disabled={true} />
-                <Text >{name}</Text>
-            </TouchableOpacity>
+            <View style={styles.taskBox} key={key}>
+                <View style={styles.task}>
+                    <CheckBox value={status} onValueChange={_ => this.checkTask(key)} />
+                    <TouchableOpacity onPress={_ => this.checkTask(key)} >
+                        <Text >{name}</Text>
+                    </TouchableOpacity>
+                </View>
+                <TouchableOpacity>
+                    <Image style={styles.trash} source={require('../../assets/baseline_delete_black.png')} />
+                </TouchableOpacity>
+            </View>
         )
 
         const Tasks = [];
         var i = 0
         var f = 0
-        var t = days.find(day => day.id = this.props.tl)
+        var t = days.find(day => day.id == this.props.tl) || { id: uuid(), date: this.props.today, tasks: [] }
         console.log(this.props.tl)
         t.tasks.map(task => {
             i++
@@ -72,16 +99,14 @@ export default class Taskslist extends React.Component {
         })
 
         // TODO:
-        // Repair page change
         // Add day + task
         // Remove day + task
         // Save array in phone memory
         // Remove old days
-        // Checkboxes management
 
         return (
 
-            <View>
+            <View style={styles.view}>
                 <View style={styles.header}>
                     <TouchableOpacity onPress={_ => this.props.switchPage("Homepage")}>
                         <Image style={styles.back} source={require('../../assets/baseline_arrow.png')} />
@@ -95,6 +120,7 @@ export default class Taskslist extends React.Component {
                 <ScrollView>
                     {Tasks}
                 </ScrollView>
+                <AddBtn></AddBtn>
             </View>
 
         )

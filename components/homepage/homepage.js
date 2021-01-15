@@ -2,24 +2,14 @@ import React from 'react'
 import {View, Text} from 'react-native'
 import Today from './today'
 import Alldays from './alldays'
+import AddBtn from '../addbtn'
 
 export default function Homepage(props) {
-
-  var day = new Date().getDate()
-  if (day < 10) {
-      day = "0" + day
-  }
-  var month = new Date().getMonth() + 1
-  if (month < 10) {
-      month = "0" + month
-  }
-  var year = new Date().getFullYear()
-
-  const date = year + "-" + month + "-" + day 
 
   const styles = {
     container: {
       width: "100%",
+      flex: 1,
     },
     header: {
       backgroundColor: "#CEE741",
@@ -41,8 +31,9 @@ export default function Homepage(props) {
       <View style={styles.header}>
         <Text style={styles.title}>Tasklist</Text>
       </View>
-      <Today switchPage={props.switchPage} today={date}></Today>
-      <Alldays switchPage={props.switchPage} today={date}></Alldays>
+      <Today switchPage={props.switchPage} today={props.today}></Today>
+      <Alldays switchPage={props.switchPage} today={props.today}></Alldays>
+      <AddBtn></AddBtn>
     </View>
   );
 }

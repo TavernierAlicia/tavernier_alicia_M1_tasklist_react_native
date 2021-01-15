@@ -9,11 +9,22 @@ class AppView extends React.Component {
         super()
         this.state = { page: "Homepage", currentTL: null}
         this.switchPage = this.switchPage.bind(this)
+        var day = new Date().getDate()
+        if (day < 10) {
+            day = "0" + day
+        }
+        var month = new Date().getMonth() + 1
+        if (month < 10) {
+            month = "0" + month
+        }
+        var year = new Date().getFullYear()
+      
+        this.date = year + "-" + month + "-" + day 
     }
 
     switchPage(s, tl = null) {
         this.setState({ page: s, currentTL: tl })
-        console.log("hhhhhhhhh")
+        console.log(tl)
         this.forceUpdate()
     }
 
@@ -29,13 +40,13 @@ class AppView extends React.Component {
         if (this.state.page == "Homepage") {
             return (
                 <View style={styles.container}>
-                    <Homepage switchPage={this.switchPage}></Homepage>
+                    <Homepage  today={this.date} switchPage={this.switchPage}></Homepage>
                 </View>
             )
         } else {
             return (
                 <View style={styles.container}>
-                    <Taskslist switchPage={this.switchPage} tl={this.state.currentTL}></Taskslist>
+                    <Taskslist today={this.date}  switchPage={this.switchPage} tl={this.state.currentTL}></Taskslist>
                 </View>
             )
         }
